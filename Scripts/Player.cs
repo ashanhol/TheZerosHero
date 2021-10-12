@@ -3,9 +3,17 @@ using System;
 
 public class Player : Area2D
 {
+	// Signals
+	[Signal]
+	public delegate void Hit(); // Will be sent to trigger gameover when players hit in disguise.
+	[Signal]
+	public delegate void DisguiseChange(); // Signal sent to add/remove player from hero's raycasting.
+	[Signal]
+	public delegate void Defending(); // Signal sent to add/remove NPC from hero's raycasting
+	
 	// Variables
+	public int Speed = 300; // No export since we're using it in multiple places in the code.
 	[Export]
-	public int Speed = 400;
 	public int SpriteMargin = 25; // Margin to help with clamping so player stays on screen.
 	
 	private Vector2 screenSize_;
@@ -44,21 +52,32 @@ public class Player : Area2D
 		{
 			// Change sprite to defend mode.
 			animatedSprite.Animation = "shield";
+			EmitSignal("Defending");
+			Speed = 150; // halve speed			
 		}
 		else if (Input.IsKeyPressed((int)KeyList.C))
 		{
 			// Change sprite to costume.
 			animatedSprite.Animation = "disguise";
+			EmitSignal("DisguiseChange");
 		}
 		else
 		{
+			// Check to see if we changed from disguise.
+			if(animatedSprite.Animation == "disguise")
+			{
+				EmitSignal("DisguiseChange");
+			}
+			// Check to see if we stopped defending.
+			else if(animatedSprite.Animation == "shield") 
+			{
+				EmitSignal("Defending");
+				Speed = 300; // reset speed
+			}
 			// Default to normal person mode
 			animatedSprite.Animation = "plain";
 		}
 		
-		// TODO: add clamp to screen bounds after it's gotten from game controller scene.
-		
-
 		// Move player
 		if (velocity.Length() > 0) 
 		{
@@ -70,10 +89,28 @@ public class Player : Area2D
 			y: Mathf.Clamp(Position.y, 0 + SpriteMargin, screenSize_.y - SpriteMargin)
 		);
 	}
+	
+	// Check for hero collision while disguised
+	private void OnPlayerBodyEntered(object body)
+	{
+		// Only worry about hero colliding while in disguise mode.
+		var animatedSprite = GetNode<AnimatedSprite>("AnimatedSprite");
+		if (animatedSprite.Animation != "disguise") {
+			return;
+		}
+		// TODO: figure out how to check body to check for hero
+		EmitSignal("Hit");
+		GetNode<CollisionShape2D>("CollisionShape2D").SetDeferred("disabled", true);
+	}
+	
+	// Reset player at game start.
+	public void Start(Vector2 pos)
+	{
+		Position = pos;
+		Show();
+		GetNode<CollisionShape2D>("CollisionShape2D").Disabled = false;
+	}
 
-//  // Called every frame. 'delta' is the elapsed time since the previous frame.
-//  public override void _Process(float delta)
-//  {
-//      
-//  }
 }
+
+
