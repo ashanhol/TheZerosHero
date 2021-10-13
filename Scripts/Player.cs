@@ -91,16 +91,20 @@ public class Player : Area2D
 	}
 	
 	// Check for hero collision while disguised
-	private void OnPlayerBodyEntered(object body)
+	private void OnPlayerBodyEntered(Node body)
 	{
 		// Only worry about hero colliding while in disguise mode.
 		var animatedSprite = GetNode<AnimatedSprite>("AnimatedSprite");
 		if (animatedSprite.Animation != "disguise") {
 			return;
 		}
-		// TODO: figure out how to check body to check for hero
-		EmitSignal("Hit");
-		GetNode<CollisionShape2D>("CollisionShape2D").SetDeferred("disabled", true);
+		// Check if |body| is Hero.
+		if(body.Name == "Hero") 
+		{
+			GD.Print("Hero collide while disguised"); // debug print statement to make sure this works
+			EmitSignal("Hit");
+			GetNode<CollisionShape2D>("CollisionShape2D").SetDeferred("disabled", true);
+		}
 	}
 	
 	// Reset player at game start.
