@@ -24,6 +24,11 @@ config/name="TheZerosHero"
 run/main_scene="res://Scenes/Main.tscn"
 config/icon="res://icon.png"
 
+[display]
+
+window/size/width=990
+window/size/height=1050
+
 [gdnative]
 
 singletons=[ "res://addons/godot-git-plugin/git_api.gdnlib" ]
