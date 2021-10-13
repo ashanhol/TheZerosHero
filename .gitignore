@@ -5,3 +5,11 @@
 bin/
 build/
 lib/
+
+# Godot stuff
+
+.import/
+*.import
+*.translation
+export_presets.cfg
+.mono/
