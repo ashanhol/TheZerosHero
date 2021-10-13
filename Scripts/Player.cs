@@ -48,14 +48,14 @@ public class Player : Area2D
 			velocity.y -= 1;
 		}
 		
-		if (Input.IsKeyPressed((int)KeyList.D))
+		if (Input.IsKeyPressed((int)KeyList.D) || Input.IsKeyPressed(16777237)) // 16777237  is shift key b/c enums dont match in C#
 		{
 			// Change sprite to defend mode.
 			animatedSprite.Animation = "shield";
 			EmitSignal("Defending");
 			Speed = 150; // halve speed			
 		}
-		else if (Input.IsKeyPressed((int)KeyList.C))
+		else if (Input.IsKeyPressed((int)KeyList.C) || Input.IsKeyPressed(16777238)) // 16777238 is ctrl key b/c enums dont match in C#
 		{
 			// Change sprite to costume.
 			animatedSprite.Animation = "disguise";
