@@ -35,15 +35,15 @@ public class Player : Area2D
 		{
 			velocity.x += 1;
 		}	
-		else if(Input.IsActionPressed("ui_left")) 
+		if(Input.IsActionPressed("ui_left")) 
 		{
 			velocity.x -= 1;
 		}
-		else if (Input.IsActionPressed("ui_down"))
+		if (Input.IsActionPressed("ui_down"))
 		{
 			velocity.y += 1;
 		}
-		else if (Input.IsActionPressed("ui_up"))
+		if (Input.IsActionPressed("ui_up"))
 		{
 			velocity.y -= 1;
 		}
@@ -60,6 +60,7 @@ public class Player : Area2D
 			// Change sprite to costume.
 			animatedSprite.Animation = "disguise";
 			EmitSignal("DisguiseChange");
+			Speed = 350;
 		}
 		else
 		{
@@ -67,6 +68,7 @@ public class Player : Area2D
 			if(animatedSprite.Animation == "disguise")
 			{
 				EmitSignal("DisguiseChange");
+				Speed = 300;
 			}
 			// Check to see if we stopped defending.
 			else if(animatedSprite.Animation == "shield") 
