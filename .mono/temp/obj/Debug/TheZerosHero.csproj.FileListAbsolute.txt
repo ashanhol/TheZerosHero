@@ -1,9 +1,0 @@
-C:\Users\adinas\Documents\Experiments\Godot\TheZerosHero\.mono\temp\obj\Debug\TheZerosHero.csproj.AssemblyReference.cache
-C:\Users\adinas\Documents\Experiments\Godot\TheZerosHero\.mono\temp\obj\Debug\TheZerosHero.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\adinas\Documents\Experiments\Godot\TheZerosHero\.mono\temp\obj\Debug\TheZerosHero.AssemblyInfoInputs.cache
-C:\Users\adinas\Documents\Experiments\Godot\TheZerosHero\.mono\temp\obj\Debug\TheZerosHero.AssemblyInfo.cs
-C:\Users\adinas\Documents\Experiments\Godot\TheZerosHero\.mono\temp\obj\Debug\TheZerosHero.csproj.CoreCompileInputs.cache
-C:\Users\adinas\Documents\Experiments\Godot\TheZerosHero\.mono\temp\bin\Debug\TheZerosHero.dll
-C:\Users\adinas\Documents\Experiments\Godot\TheZerosHero\.mono\temp\bin\Debug\TheZerosHero.pdb
-C:\Users\adinas\Documents\Experiments\Godot\TheZerosHero\.mono\temp\obj\Debug\TheZerosHero.dll
-C:\Users\adinas\Documents\Experiments\Godot\TheZerosHero\.mono\temp\obj\Debug\TheZerosHero.pdb
