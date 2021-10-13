@@ -60,6 +60,7 @@ public class Player : Area2D
 			// Change sprite to costume.
 			animatedSprite.Animation = "disguise";
 			EmitSignal("DisguiseChange");
+			Speed = 350;
 		}
 		else
 		{
@@ -67,6 +68,7 @@ public class Player : Area2D
 			if(animatedSprite.Animation == "disguise")
 			{
 				EmitSignal("DisguiseChange");
+				Speed = 300;
 			}
 			// Check to see if we stopped defending.
 			else if(animatedSprite.Animation == "shield") 
