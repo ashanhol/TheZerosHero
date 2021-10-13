@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://Scenes/HUD.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=2]
 
 [sub_resource type="CSharpScript" id=1]
 resource_name = "Main"
@@ -29,5 +30,7 @@ public class Main : Node
 
 [node name="Main" type="Node"]
 script = SubResource( 1 )
+
+[node name="Player" parent="." instance=ExtResource( 2 )]
 
 [node name="HUD" parent="." instance=ExtResource( 1 )]
