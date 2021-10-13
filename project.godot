@@ -21,6 +21,7 @@ _global_script_class_icons={
 [application]
 
 config/name="TheZerosHero"
+run/main_scene="res://Scenes/Player.tscn"
 config/icon="res://icon.png"
 
 [gdnative]
