@@ -112,6 +112,7 @@ public class Player : Area2D
 			GetNode<CollisionShape2D>("CollisionShape2D").SetDeferred("disabled", true);
 			GetNode<Timer>("StunTimer").Start(); // start stun timer
 			IsStunned = true;
+			animatedSprite.Animation = "plain";
 		}
 	}
 	
