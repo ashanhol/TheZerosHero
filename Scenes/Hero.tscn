@@ -15,8 +15,7 @@ animations = [ {
 [sub_resource type="CircleShape2D" id=2]
 radius = 47.5658
 
-[node name="Hero" type="RigidBody2D"]
-gravity_scale = 0.0
+[node name="Hero" type="KinematicBody2D"]
 script = ExtResource( 3 )
 __meta__ = {
 "_edit_group_": true
@@ -24,7 +23,6 @@ __meta__ = {
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 1 )
-frame = 1
 playing = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
