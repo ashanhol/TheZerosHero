@@ -5,7 +5,7 @@ public class Player : Area2D
 {
 	// Signals
 	[Signal]
-	public delegate void Hit(); // Will be sent to trigger penalty when players hit in disguise.
+	public delegate void PlayerHit(); // Will be sent to trigger penalty when players hit in disguise.
 	[Signal]
 	public delegate void Yell(); // Fired when we're in yell mode.
 
@@ -115,7 +115,7 @@ public class Player : Area2D
 		if(body.Name == "Hero") 
 		{
 			GD.Print("Hero collide while disguised"); // debug print statement to make sure this works
-			EmitSignal("Hit");
+			EmitSignal("PlayerHit");
 			GetNode<CollisionShape2D>("CollisionShape2D").SetDeferred("disabled", true);
 			GetNode<Timer>("StunTimer").Start(); // start stun timer
 			IsStunned = true;
