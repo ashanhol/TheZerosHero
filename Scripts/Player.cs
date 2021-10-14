@@ -6,9 +6,10 @@ public class Player : Area2D
 	// Signals
 	[Signal]
 	public delegate void Hit(); // Will be sent to trigger penalty when players hit in disguise.
+	[Signal]
+	public delegate void Yell(); // Fired when we're in yell mode.
 
 	public bool IsDisguised { get; set; }
-	public bool IsDefending { get; set; }
 	
 	// Variables
 	public int Speed = 300; // No export since we're using it in multiple places in the code.
@@ -50,11 +51,17 @@ public class Player : Area2D
 				velocity.y -= 1;
 			}
 			
-			if (Input.IsKeyPressed((int)KeyList.D) || Input.IsKeyPressed((int)KeyList.Shift))
+			// Can't yell if we're in disguise
+			if (animatedSprite.Animation != "disguise" && 
+				Input.IsKeyPressed((int)KeyList.D) || Input.IsKeyPressed((int)KeyList.Shift))
 			{
-				// Change sprite to defend mode.
-				animatedSprite.Animation = "shield";
-				IsDefending = true;
+				// Change sprite to yell mode.
+				animatedSprite.Animation = "yell";
+				var yoohoo = GetNode<AudioStreamPlayer2D>("Yoohoo");
+				if(!yoohoo.IsPlaying()){
+					yoohoo.Play();
+					EmitSignal("Yell");			
+				}
 				Speed = 150; // halve speed			
 			}
 			else if (Input.IsKeyPressed((int)KeyList.C) || Input.IsKeyPressed((int)KeyList.Control))
@@ -63,10 +70,6 @@ public class Player : Area2D
 				animatedSprite.Animation = "disguise";
 				IsDisguised = true;
 				Speed = 350;			
-				var yoohoo = GetNode<AudioStreamPlayer2D>("Yoohoo");
-				if(!yoohoo.IsPlaying()){
-					yoohoo.Play();
-				}
 			}
 			else
 			{
@@ -77,9 +80,8 @@ public class Player : Area2D
 					Speed = 300;
 				}
 				// Check to see if we stopped defending.
-				else if(animatedSprite.Animation == "shield") 
+				else if(animatedSprite.Animation == "yell") 
 				{
-					IsDefending = false;
 					Speed = 300; // reset speed
 				}
 				// Default to normal person mode
