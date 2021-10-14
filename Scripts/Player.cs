@@ -6,10 +6,9 @@ public class Player : Area2D
 	// Signals
 	[Signal]
 	public delegate void Hit(); // Will be sent to trigger penalty when players hit in disguise.
-	[Signal]
-	public delegate void DisguiseChange(); // Signal sent to add/remove player from hero's raycasting.
-	[Signal]
-	public delegate void Defending(); // Signal sent to add/remove NPC from hero's raycasting
+
+	public bool IsDisguised { get; set; }
+	public bool IsDefending { get; set; }
 	
 	// Variables
 	public int Speed = 300; // No export since we're using it in multiple places in the code.
@@ -55,28 +54,32 @@ public class Player : Area2D
 			{
 				// Change sprite to defend mode.
 				animatedSprite.Animation = "shield";
-				EmitSignal("Defending");
+				IsDefending = true;
 				Speed = 150; // halve speed			
 			}
 			else if (Input.IsKeyPressed((int)KeyList.C) || Input.IsKeyPressed((int)KeyList.Control))
 			{
 				// Change sprite to costume.
 				animatedSprite.Animation = "disguise";
-				EmitSignal("DisguiseChange");
-				Speed = 350;
+				IsDisguised = true;
+				Speed = 350;			
+				var yoohoo = GetNode<AudioStreamPlayer2D>("Yoohoo");
+				if(!yoohoo.IsPlaying()){
+					yoohoo.Play();
+				}
 			}
 			else
 			{
 				// Check to see if we changed from disguise.
 				if(animatedSprite.Animation == "disguise")
 				{
-					EmitSignal("DisguiseChange");
+					IsDisguised = false;
 					Speed = 300;
 				}
 				// Check to see if we stopped defending.
 				else if(animatedSprite.Animation == "shield") 
 				{
-					EmitSignal("Defending");
+					IsDefending = false;
 					Speed = 300; // reset speed
 				}
 				// Default to normal person mode
