@@ -7,9 +7,7 @@
 [ext_resource path="res://Scripts/Main.cs" type="Script" id=5]
 [ext_resource path="res://Scenes/Villain.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Scenes/NPC.tscn" type="PackedScene" id=7]
-
-[sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 150, 150 )
+[ext_resource path="res://Scenes/Hero.tscn" type="PackedScene" id=8]
 
 [sub_resource type="Curve2D" id=2]
 _data = {
@@ -26,29 +24,22 @@ Villains = ExtResource( 6 )
 [node name="TownCenter" type="TextureRect" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
+rect_scale = Vector2( 2, 2 )
 texture = ExtResource( 3 )
-expand = true
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="TownSquare" type="TextureRect" parent="."]
-anchor_left = 0.362626
-anchor_top = 0.41619
-anchor_right = 0.665657
-anchor_bottom = 0.701905
+margin_left = 530.0
+margin_top = 640.0
+margin_right = 630.0
+margin_bottom = 740.0
+rect_scale = Vector2( 3, 3 )
 texture = ExtResource( 4 )
-expand = true
 __meta__ = {
 "_edit_use_anchors_": true
 }
-
-[node name="RigidBody2D" type="RigidBody2D" parent="TownSquare"]
-position = Vector2( 150, 150 )
-gravity_scale = 0.0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="TownSquare/RigidBody2D"]
-shape = SubResource( 1 )
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
 
@@ -56,3 +47,9 @@ shape = SubResource( 1 )
 curve = SubResource( 2 )
 
 [node name="SpawnLocation" type="PathFollow2D" parent="OuterPath"]
+
+[node name="Hero" parent="." instance=ExtResource( 8 )]
+position = Vector2( 500, 500 )
+
+[node name="Camera2D" type="Camera2D" parent="Hero"]
+current = true

@@ -27,6 +27,10 @@ public class Main : Node
 	private int currentLevel_ = 0;
 	
 	private static Random _random = new Random();
+	
+	// FOR TESTING
+	[Export]
+	public bool CameraFollowsPlayerInsteadOfHero = false;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -36,6 +40,7 @@ public class Main : Node
 		
 		CalcPR();
 		UpdateScore();
+		SetCameraLimits();
 	}
 
 	private void SetLevel(int level)
@@ -95,6 +100,25 @@ public class Main : Node
 
 		CalcPR();
 		UpdateScore();
+	}
+	
+	private void SetCameraLimits() {
+		// Get the gameplay bounds from our texture size.
+		TextureRect texture = GetNode<TextureRect>("TownCenter");
+		Vector2 limits = texture.RectSize * texture.RectScale;
+		
+		// Move the camera to the player if we need to debug.
+		Camera2D camera2D = GetNode<Camera2D>($"Hero/Camera2D");
+		if (CameraFollowsPlayerInsteadOfHero) {
+			GetNode<Node>("Hero").RemoveChild(camera2D);
+			GetNode<Node>("Player").AddChild(camera2D);
+		}
+		
+		// Don't let our camera exceed our texture bounds.
+		camera2D.LimitLeft = 0;
+		camera2D.LimitTop = 0;
+		camera2D.LimitRight = (int)limits.x;
+		camera2D.LimitBottom = (int)limits.y;
 	}
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.
