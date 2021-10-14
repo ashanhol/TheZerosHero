@@ -1,6 +1,30 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Scripts/NPC.cs" type="Script" id=1]
+[ext_resource path="res://Assets/art/granny0.png" type="Texture" id=2]
+[ext_resource path="res://Assets/art/granny1.png" type="Texture" id=3]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 2 ), ExtResource( 3 ) ],
+"loop": true,
+"name": "walk",
+"speed": 3.0
+} ]
 
 [node name="NPC" type="RigidBody2D"]
+collision_mask = 0
+gravity_scale = 0.0
 script = ExtResource( 1 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+frames = SubResource( 1 )
+animation = "walk"
+frame = 1
+playing = true
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PoolVector2Array( -7.41513, -43.4267, 6.24944, -43.2165, 17.6015, -21.143, 23.9083, 50.5434, -22.9717, 50.5434, -18.3468, -21.3532 )
