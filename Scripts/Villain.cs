@@ -4,9 +4,9 @@ using System;
 public class Villain : RigidBody2D
 {
 	[Signal]
-	public delegate void VillianHit(); // Will be sent to trigger penalty when players hit in disguise.
+	public delegate void VillainHit(); // Will be sent to trigger penalty when players hit in disguise.
 	[Signal]
-	public delegate void VillianOffscren();
+	public delegate void VillainOffscren();
 	
 	// Variables
 	public int Speed = 200; // No export since we're using it in multiple places in the code.
@@ -52,7 +52,7 @@ public class Villain : RigidBody2D
 		// Hero missed his chance to get him.
 		if (Position.y > screenSize_.y)
 		{
-			EmitSignal("VillianOffscren");
+			EmitSignal("VillainOffscren");
 			Hide();	
 		}
 	}
@@ -64,7 +64,7 @@ public class Villain : RigidBody2D
 		if(body.Name == "Hero") 
 		{
 			GD.Print("Hero collided w villian"); // debug print statement to make sure this works
-			EmitSignal("VillianHit");
+			EmitSignal("VillainHit");
 			GetNode<CollisionShape2D>("CollisionShape2D").SetDeferred("disabled", true);
 			Hide();
 		}
