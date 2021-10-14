@@ -5,7 +5,7 @@ public class Player : Area2D
 {
 	// Signals
 	[Signal]
-	public delegate void Hit(); // Will be sent to trigger gameover when players hit in disguise.
+	public delegate void Hit(); // Will be sent to trigger penalty when players hit in disguise.
 	[Signal]
 	public delegate void DisguiseChange(); // Signal sent to add/remove player from hero's raycasting.
 	[Signal]
@@ -17,7 +17,8 @@ public class Player : Area2D
 	public int SpriteMargin = 25; // Margin to help with clamping so player stays on screen.
 	
 	private Vector2 screenSize_;
-
+	private bool IsStunned = false;
+	
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
@@ -26,70 +27,73 @@ public class Player : Area2D
 	
 	public override void _Process(float delta) 
 	{
-		var velocity = new Vector2();
-		var animatedSprite = GetNode<AnimatedSprite>("AnimatedSprite");
-		animatedSprite.Play();
+		if(!IsStunned) 
+		{
+			var velocity = new Vector2();
+			var animatedSprite = GetNode<AnimatedSprite>("AnimatedSprite");
+			animatedSprite.Play();
 
-		// Determine input.		
-		if(Input.IsActionPressed("ui_right"))
-		{
-			velocity.x += 1;
-		}	
-		if(Input.IsActionPressed("ui_left")) 
-		{
-			velocity.x -= 1;
-		}
-		if (Input.IsActionPressed("ui_down"))
-		{
-			velocity.y += 1;
-		}
-		if (Input.IsActionPressed("ui_up"))
-		{
-			velocity.y -= 1;
-		}
-		
-		if (Input.IsKeyPressed((int)KeyList.D) || Input.IsKeyPressed(16777237)) // 16777237  is shift key b/c enums dont match in C#
-		{
-			// Change sprite to defend mode.
-			animatedSprite.Animation = "shield";
-			EmitSignal("Defending");
-			Speed = 150; // halve speed			
-		}
-		else if (Input.IsKeyPressed((int)KeyList.C) || Input.IsKeyPressed(16777238)) // 16777238 is ctrl key b/c enums dont match in C#
-		{
-			// Change sprite to costume.
-			animatedSprite.Animation = "disguise";
-			EmitSignal("DisguiseChange");
-			Speed = 350;
-		}
-		else
-		{
-			// Check to see if we changed from disguise.
-			if(animatedSprite.Animation == "disguise")
+			// Determine input.		
+			if(Input.IsActionPressed("ui_right"))
 			{
-				EmitSignal("DisguiseChange");
-				Speed = 300;
+				velocity.x += 1;
+			}	
+			if(Input.IsActionPressed("ui_left")) 
+			{
+				velocity.x -= 1;
 			}
-			// Check to see if we stopped defending.
-			else if(animatedSprite.Animation == "shield") 
+			if (Input.IsActionPressed("ui_down"))
 			{
+				velocity.y += 1;
+			}
+			if (Input.IsActionPressed("ui_up"))
+			{
+				velocity.y -= 1;
+			}
+			
+			if (Input.IsKeyPressed((int)KeyList.D) || Input.IsKeyPressed((int)KeyList.Shift))
+			{
+				// Change sprite to defend mode.
+				animatedSprite.Animation = "shield";
 				EmitSignal("Defending");
-				Speed = 300; // reset speed
+				Speed = 150; // halve speed			
 			}
-			// Default to normal person mode
-			animatedSprite.Animation = "plain";
+			else if (Input.IsKeyPressed((int)KeyList.C) || Input.IsKeyPressed((int)KeyList.Control))
+			{
+				// Change sprite to costume.
+				animatedSprite.Animation = "disguise";
+				EmitSignal("DisguiseChange");
+				Speed = 350;
+			}
+			else
+			{
+				// Check to see if we changed from disguise.
+				if(animatedSprite.Animation == "disguise")
+				{
+					EmitSignal("DisguiseChange");
+					Speed = 300;
+				}
+				// Check to see if we stopped defending.
+				else if(animatedSprite.Animation == "shield") 
+				{
+					EmitSignal("Defending");
+					Speed = 300; // reset speed
+				}
+				// Default to normal person mode
+				animatedSprite.Animation = "plain";
+			}
+			
+			// Move player
+			if (velocity.Length() > 0) 
+			{
+				velocity = velocity.Normalized() * Speed;
+			}
+			Position += velocity * delta;
+			Position = new Vector2(
+				x: Mathf.Clamp(Position.x, 0 + SpriteMargin, screenSize_.x - SpriteMargin),
+				y: Mathf.Clamp(Position.y, 0 + SpriteMargin, screenSize_.y - SpriteMargin)
+			);
 		}
-		
-		// Move player
-		if (velocity.Length() > 0) 
-		{
-			velocity = velocity.Normalized() * Speed;
-		}
-		Position += velocity * delta;
-		Position = new Vector2(
-			x: Mathf.Clamp(Position.x, 0 + SpriteMargin, screenSize_.x - SpriteMargin),
-			y: Mathf.Clamp(Position.y, 0 + SpriteMargin, screenSize_.y - SpriteMargin)
-		);
 	}
 	
 	// Check for hero collision while disguised
@@ -106,7 +110,16 @@ public class Player : Area2D
 			GD.Print("Hero collide while disguised"); // debug print statement to make sure this works
 			EmitSignal("Hit");
 			GetNode<CollisionShape2D>("CollisionShape2D").SetDeferred("disabled", true);
+			GetNode<Timer>("StunTimer").Start(); // start stun timer
+			IsStunned = true;
 		}
+	}
+	
+	private void OnStunTimerTimeout()
+	{
+		// Unstun the player to move again
+		GetNode<CollisionShape2D>("CollisionShape2D").SetDeferred("disabled", false);		
+		IsStunned = false;
 	}
 	
 	// Reset player at game start.
@@ -118,5 +131,3 @@ public class Player : Area2D
 	}
 
 }
-
-
