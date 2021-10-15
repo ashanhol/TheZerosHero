@@ -14,8 +14,9 @@ animations = [ {
 "speed": 3.0
 } ]
 
-[sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 24.6516, 47.1403 )
+[sub_resource type="CapsuleShape2D" id=2]
+radius = 22.0
+height = 55.1298
 
 [node name="NPC" type="Area2D"]
 gravity = 0.0
@@ -32,6 +33,7 @@ frame = 1
 playing = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 0, 5 )
 shape = SubResource( 2 )
 
 [node name="GrannyNo" type="AudioStreamPlayer2D" parent="."]
