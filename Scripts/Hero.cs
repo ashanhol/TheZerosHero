@@ -6,6 +6,7 @@ public class Hero : KinematicBody2D
 	// Variables
 	public bool IsPlayerYelling = false;
 	public int Speed = 200;
+	public int HearingDistance = 30; // Max distance from which the hero can hear the player yelling.
 	[Export]
 	public int SpriteMargin = 25; // Margin to help with clamping so hero stays on screen.
 	public Node2D WhoWeMovingTowards = null; // Who are we moving towards atm.
@@ -20,6 +21,13 @@ public class Hero : KinematicBody2D
 	
 	public override void _PhysicsProcess(float delta)
 	{
+		var player = GetParent().GetNode<Player>("Player");
+		if (IsPlayerYelling && Position.DistanceTo(player.Position) < HearingDistance)
+		{
+			GD.Print("I hear something");
+			IsPlayerYelling = false;
+			Rotation = (player.Position - Position).Angle();
+		}
 		if(WhoWeMovingTowards == null) 
 		{
 			Node2D collider = (Node2D)GetNode<RayCast2D>("RayCast2D").GetCollider();
@@ -42,5 +50,10 @@ public class Hero : KinematicBody2D
 			var direction = Speed * (WhoWeMovingTowards.Position - Position).Normalized();
 			Position += direction * delta;
 		}
+	}
+	
+	public void OnPlayerYell()
+	{
+			IsPlayerYelling = true;
 	}
 }
