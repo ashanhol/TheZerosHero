@@ -55,3 +55,5 @@ position = Vector2( 500, 500 )
 
 [node name="Camera2D" type="Camera2D" parent="Hero"]
 current = true
+
+[connection signal="Yell" from="Player" to="Hero" method="OnPlayerYell"]
