@@ -120,6 +120,7 @@ public class Player : Area2D
 			GetNode<Timer>("StunTimer").Start(); // start stun timer
 			IsStunned = true;
 			animatedSprite.Animation = "plain";
+			GetParent().GetNode<Hero>("Hero").WhoWeMovingTowards = null;
 		}
 	}
 	
