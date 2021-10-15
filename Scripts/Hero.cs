@@ -50,6 +50,7 @@ public class Hero : KinematicBody2D
 			// If we're already locked to something, move towards it.
 			var direction = Speed * (WhoWeMovingTowards.Position - Position).Normalized();
 			Position += direction * delta;
+			Rotation = (WhoWeMovingTowards.Position - Position).Angle();
 		}
 	}
 	
