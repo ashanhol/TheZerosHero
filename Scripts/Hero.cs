@@ -5,7 +5,7 @@ public class Hero : KinematicBody2D
 {
 		// Variables
 		public bool IsPlayerDisguised = false;
-		public bool IsPlayerDefending = false;
+		public bool IsPlayerYelling = false;
 		public int Speed = 200;
 		[Export]
 		public int SpriteMargin = 25; // Margin to help with clamping so hero stays on screen.
@@ -20,25 +20,22 @@ public class Hero : KinematicBody2D
 		
 		public override void _PhysicsProcess(float delta)
 		{
-			var spaceState = GetWorld2d().DirectSpaceState;
 			var rayCast = GetNode<RayCast2D>("RayCast2D");
 			if (rayCast.IsColliding())
-			// If the raycast collides with something, move towards it
 			{
-				var direction = (GlobalPosition - rayCast.GetCollisionPoint()).Normalized();
-				direction = new Vector2(
-					x: Mathf.Clamp(direction.x, 0 + SpriteMargin, screenSize_.x - SpriteMargin),
-					y: Mathf.Clamp(direction.y, 0 + SpriteMargin, screenSize_.y - SpriteMargin)
-				);
-				var collision = MoveAndCollide(direction * delta);
+				// If the raycast collides with something, move towards it.
+				var direction = (rayCast.GetCollisionPoint() - GlobalPosition).Normalized();
+				var collision = MoveAndCollide(direction * Speed * delta);
 				if (collision != null)
 				{
+					// If the hero collides with something, hit it and continue rotating.
 					GD.Print("Hero hit " + collision.Collider);
+					Rotation += 1 * delta;
 				}
 			}
 			else
-			// Rotate the hero until the raycast collides with something
 			{
+				// Rotate the hero until the raycast collides with something.
 				Rotation += 1 * delta;
 			}
 		} 
@@ -48,10 +45,10 @@ public class Hero : KinematicBody2D
 			IsPlayerDisguised = !IsPlayerDisguised;
 		}
 		
-		public void FlipIsPlayerDefending()
-		{
-			IsPlayerDefending = !IsPlayerDefending;
-		}
+//		public void FlipIsPlayerDefending()
+//		{
+//			IsPlayerDefending = !IsPlayerDefending;
+//		}
 		
 		public void EditRayCastExceptions(Node obj)
 		{
@@ -61,15 +58,6 @@ public class Hero : KinematicBody2D
 				rayCast.RemoveException(obj);
 			} else {
 				rayCast.AddException(obj);
-			}
-			
-			if (IsPlayerDefending)
-			{
-				rayCast.Enabled = false;
-			}
-			else
-			{
-				rayCast.Enabled = true;
 			}
 		}
 		
