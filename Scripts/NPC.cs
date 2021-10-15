@@ -7,7 +7,7 @@ public class NPC : Area2D
 	public int Speed = 30; // How fast the player will move (pixels/sec).
 	
 	[Signal]
-	public delegate void Hit(bool isVillain);
+	public delegate void NPCHit();
 
 	private Vector2 _screenSize; // Size of the game window.
 	
@@ -123,7 +123,7 @@ public class NPC : Area2D
 				_grannyNoSound.Play();
 			}
 			
-			EmitSignal("Hit", false);
+			EmitSignal("NPCHit");
 			GetNode<CollisionShape2D>("CollisionShape2D").SetDeferred("disabled", true);
 			Hide();
 		}
