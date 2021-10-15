@@ -14,12 +14,12 @@ animations = [ {
 "speed": 3.0
 } ]
 
-[sub_resource type="ConvexPolygonShape2D" id=2]
-points = PoolVector2Array( -5, -43, 5, -43, 17, -21, 23, 50, -23, 50, -18, -21 )
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 24.6516, 47.1403 )
 
-[node name="NPC" type="RigidBody2D"]
+[node name="NPC" type="Area2D"]
+gravity = 0.0
 collision_mask = 0
-gravity_scale = 0.0
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_group_": true
@@ -28,7 +28,6 @@ __meta__ = {
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 1 )
 animation = "walk"
-frame = 1
 playing = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -41,4 +40,3 @@ stream = ExtResource( 4 )
 stream = ExtResource( 5 )
 
 [connection signal="body_entered" from="." to="." method="OnNPCBodyEntered"]
-[connection signal="body_shape_entered" from="." to="." method="OnNPCBodyShapeEntered"]

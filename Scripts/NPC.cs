@@ -1,13 +1,13 @@
 using Godot;
 using System;
 
-public class NPC : RigidBody2D
+public class NPC : Area2D
 {
 	[Export]
 	public int Speed = 30; // How fast the player will move (pixels/sec).
 	
 	[Signal]
-	public delegate void NPCHit();
+	public delegate void Hit(bool isVillain);
 
 	private Vector2 _screenSize; // Size of the game window.
 	
@@ -17,8 +17,12 @@ public class NPC : RigidBody2D
 	
 	static private Random _random = new Random();
 	
+	
 	static private int _minTravelDistance;
 	static private int _maxTravelDistance;
+	
+	AudioStreamPlayer2D _ohMySound;
+	AudioStreamPlayer2D _grannyNoSound;
 	
 	private int RandRange(int min, int max)
 	{
@@ -46,8 +50,9 @@ public class NPC : RigidBody2D
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
+		_ohMySound = GetNode<AudioStreamPlayer2D>("GrannyOhMy");
+		_grannyNoSound = GetNode<AudioStreamPlayer2D>("GrannyNo");
 		Show();
-		GetNode<AudioStreamPlayer2D>("GrannyOhMy").Play();
 		
 		_screenSize = new Vector2((int)ProjectSettings.GetSetting("display/window/size/width"), (int)ProjectSettings.GetSetting("display/window/size/height"));
 		
@@ -106,26 +111,24 @@ public class NPC : RigidBody2D
 			_travelDistance = RandRange(_minTravelDistance, _maxTravelDistance);
 		}
 	}
+
 	
 	private void OnNPCBodyEntered(Node body)
 	{
 		//We only care about collisions with the hero
 		if (body.Name == "Hero")
 		{
-			var grannyNo = GetNode<AudioStreamPlayer2D>("GrannyNo");
-			if(!grannyNo.IsPlaying())
+			if(!_grannyNoSound.Playing)
 			{
-				grannyNo.Play();
+				_grannyNoSound.Play();
 			}
 			
-			Hide();
-			EmitSignal("NPCHit");
+			EmitSignal("Hit", false);
 			GetNode<CollisionShape2D>("CollisionShape2D").SetDeferred("disabled", true);
+			Hide();
 		}
 	}
 	
 	
 	
 }
-
-
