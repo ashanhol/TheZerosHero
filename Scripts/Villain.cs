@@ -55,7 +55,7 @@ public class Villain : Area2D
 		if (Position.y > screenSize_.y)
 		{
 			EmitSignal("VillainOffscren");
-			Hide();	
+			QueueFree();
 		}
 	}
 
@@ -67,7 +67,7 @@ public class Villain : Area2D
 		{
 			EmitSignal("VillainHit");
 			GetNode<CollisionShape2D>("CollisionShape2D").SetDeferred("disabled", true);
-			Hide();
+			QueueFree();
 		}
 	}
 

@@ -23,8 +23,11 @@ public class Main : Node
 	const string bossPrNeg = "Your boss screams: You idiot! You're doing more harm than good! I should fire you!";
 	const string bossPrPos = "Your boss says: Not bad. Imagine what you could do if you were really trying...";
 
-	private int[] villainLevels = {1, 1, 3};
-	private int[] innocentLevels = {0, 1, 6};
+	private int[] villainLevels = {1, 1, 3, 5};
+	private int[] innocentLevels = {0, 1, 6, 10};
+
+	const int extraVillainsPerLevelAfterMax = 2;
+	const int extraInnocentsPerLevelAfterMax = 4;
 
 	private string[] prologueStrings = {prologue0, prologue1, prologue2, prologue3, prologue4, prologue5, prologue6, prologue7, prologue8};	
  
@@ -138,8 +141,20 @@ public class Main : Node
 		await ToSignal(messageTimer, "timeout");
 		hud.SetMessage("");
 
-		levelNumVillains_ = villainLevels[level];
-		levelNumInnocents_ = innocentLevels[level];
+		int extraVillains = 0;
+		int extraInnocents = 0;
+
+		if (level >= villainLevels.Length)
+		{
+			level = villainLevels.Length - 1;
+			int extraLevels = currentLevel_ - level;
+			
+			extraVillains = extraLevels * extraVillainsPerLevelAfterMax;
+			extraInnocents = extraLevels * extraInnocentsPerLevelAfterMax;
+		}
+
+		levelNumVillains_ = villainLevels[level] + extraVillains;
+		levelNumInnocents_ = innocentLevels[level] + extraInnocents;
 		
 		SpawnCharacters(Villains, levelNumVillains_);
 		SpawnCharacters(NPCs, levelNumInnocents_);
@@ -159,6 +174,8 @@ public class Main : Node
 		while (amount --> 0) {
 			// Create a single object instance.
 			Node2D instance = (Node2D)objClass.Instance();
+			instance.Connect("NPCHit", this, nameof(HitInnocent));
+			instance.Connect("VillainHit", this, nameof(HitVillain));
 
 			// Pick a random location on our path. Set the mob's position.
 			PathFollow2D spawnLocation =
@@ -168,8 +185,10 @@ public class Main : Node
 			
 			// Finally, add our mob instance.
 			AddChild(instance);
+			instance.Show();
 		}
 	}
+
 
 	private void HitVillain()
 	{
