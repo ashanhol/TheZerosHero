@@ -25,6 +25,8 @@ public class Main : Node
 	private int pr_ = 0;
 
 	private int currentLevel_ = 0;
+
+	private bool startEarly_ = false;
 	
 	private static Random _random = new Random();
 	
@@ -35,12 +37,49 @@ public class Main : Node
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-		// Temporary for testing.
+		SetCameraLimits();
+		Prologue();
+	}
+
+	async private void Prologue()
+	{
+		var messageTimer = GetNode<Timer>("MessageTimer");
+		var hud = GetNode<HUD>("HUD");
+		
+		hud.ShowButton();		
+
+		for (int i = 0; i < 3; i++)
+		{
+			if (startEarly_)
+			{
+				startEarly_ = false;
+				break;
+			}
+
+			hud.SetMessage(i.ToString());
+			messageTimer.Start();
+			await ToSignal(messageTimer, "timeout");
+		}
+		
+		hud.SetMessage("");
+
+		hud.HideButton();
+
+		StartGame();
+	}
+
+	private void StartPressed()
+	{
+		GD.Print("Main StartPressed");
+		startEarly_ = true;
+	}
+
+	private void StartGame()
+	{
 		SetLevel(0);
 		
 		CalcPR();
-		UpdateScore();
-		SetCameraLimits();
+		UpdateScore();		
 	}
 
 	private void SetLevel(int level)
@@ -121,9 +160,15 @@ public class Main : Node
 		camera2D.LimitBottom = (int)limits.y;
 	}
 
+	private void OnMessageTimerTimeout()
+	{
+		
+	}
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.
 //  public override void _Process(float delta)
 //  {
 //      
 //  }
 }
+
+
