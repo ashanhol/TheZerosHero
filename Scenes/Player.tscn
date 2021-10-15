@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Assets/art/PRguy0.png" type="Texture" id=1]
 [ext_resource path="res://Assets/art/PRguyYell.png" type="Texture" id=2]
 [ext_resource path="res://Assets/art/PRguyDisguise.png" type="Texture" id=3]
 [ext_resource path="res://Scripts/Player.cs" type="Script" id=4]
 [ext_resource path="res://Assets/sounds/yoohoo.wav" type="AudioStream" id=5]
+[ext_resource path="res://Assets/art/PRguy0Transparent.png" type="Texture" id=6]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -28,10 +29,18 @@ animations = [ {
 radius = 20.0816
 height = 23.4044
 
+[sub_resource type="SpriteFrames" id=3]
+animations = [ {
+"frames": [ ExtResource( 6 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
 [node name="Player" type="Area2D"]
 script = ExtResource( 4 )
 
-[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+[node name="Body" type="AnimatedSprite" parent="."]
 frames = SubResource( 1 )
 animation = "yell"
 
@@ -44,6 +53,11 @@ wait_time = 3.0
 
 [node name="Yoohoo" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource( 5 )
+
+[node name="TransparentUI" type="AnimatedSprite" parent="."]
+visible = false
+scale = Vector2( 0.3, 0.3 )
+frames = SubResource( 3 )
 
 [connection signal="body_entered" from="." to="." method="OnPlayerBodyEntered"]
 [connection signal="timeout" from="StunTimer" to="." method="OnStunTimerTimeout"]

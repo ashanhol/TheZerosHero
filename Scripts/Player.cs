@@ -32,7 +32,7 @@ public class Player : Area2D
 		if(!IsStunned) 
 		{
 			var velocity = new Vector2();
-			var animatedSprite = GetNode<AnimatedSprite>("AnimatedSprite");
+			var animatedSprite = GetNode<AnimatedSprite>("Body");
 			animatedSprite.Play();
 
 			// Determine input.		
@@ -107,7 +107,7 @@ public class Player : Area2D
 	private void OnPlayerBodyEntered(Node body)
 	{
 		// Only worry about hero colliding while in disguise mode.
-		var animatedSprite = GetNode<AnimatedSprite>("AnimatedSprite");
+		var animatedSprite = GetNode<AnimatedSprite>("Body");
 		if (animatedSprite.Animation != "disguise") {
 			return;
 		}
