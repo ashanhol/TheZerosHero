@@ -5,6 +5,7 @@ public class Hero : KinematicBody2D
 {
 		// Variables
 		public bool IsPlayerDisguised = false;
+		public bool IsPlayerYelling = false;
 		public int Speed = 200;
 		[Export]
 		public int SpriteMargin = 25; // Margin to help with clamping so hero stays on screen.
@@ -65,7 +66,6 @@ public class Hero : KinematicBody2D
 		{
 			IsPlayerDisguised = !IsPlayerDisguised;
 		}
-		
 		public void EditRayCastExceptions(Node obj)
 		{
 			var rayCast = GetNode<RayCast2D>("RayCast2D");

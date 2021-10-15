@@ -4,11 +4,14 @@ using System;
 public class NPC : RigidBody2D
 {
 	[Export]
-	public int Speed = 75; // How fast the player will move (pixels/sec).
+	public int Speed = 30; // How fast the player will move (pixels/sec).
+	
+	[Signal]
+	public delegate void NPCHit();
 
 	private Vector2 _screenSize; // Size of the game window.
 	
-	private int _travelDistance; //How many pixels left before the granny turns
+	private float _travelDistance; //How many pixels left before the granny turns
 	
 	private Vector2 _velocity;
 	
@@ -22,6 +25,8 @@ public class NPC : RigidBody2D
 		return _random.Next(min, max + 1);
 	}
 	
+	// returns true if next pixel moved in current direction will put NPC outside
+	// the screen bounds
 	private bool isGoingOffScreen()
 	{
 		bool offScreenLeft = Position.x <= 0 && _velocity.x < 0;
@@ -31,7 +36,7 @@ public class NPC : RigidBody2D
 		return offScreenLeft || offScreenRight || offScreenTop || offScreenBottom;
 	}
 	
-	private void ChangeDirection()
+	private void ChangeDirection90Degrees()
 	{
 		int isTurningClockwise = RandRange(0, 1);
 		_velocity = isTurningClockwise == 1? new Vector2(-_velocity.y, _velocity.x) :
@@ -41,8 +46,12 @@ public class NPC : RigidBody2D
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
+		Show();
+		GetNode<AudioStreamPlayer2D>("GrannyOhMy").Play();
+		
 		_screenSize = new Vector2((int)ProjectSettings.GetSetting("display/window/size/width"), (int)ProjectSettings.GetSetting("display/window/size/height"));
-		int startDirection = _random.Next(4);
+		
+		int startDirection = RandRange(0, 3);
 		switch (startDirection)
 		{
 			// randomly choose what direction to start in
@@ -59,38 +68,64 @@ public class NPC : RigidBody2D
 				break;
 		}
 		_velocity = _velocity.Normalized();
+		
+		// I made up these numbers so she wouldn't turn too often or 
+		// walk straight for way too long, idk if they're ideal
 		_minTravelDistance = 10;
 		_maxTravelDistance = (int)Math.Min(_screenSize.x, _screenSize.y)/2;
-		_travelDistance = _random.Next(_minTravelDistance, _maxTravelDistance);
+		_travelDistance = RandRange(_minTravelDistance, _maxTravelDistance);
 	}
 	
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(float delta)
 	{
+		//Move 
 		Position += _velocity * delta * Speed;
 		Position = new Vector2(
 			x: Mathf.Clamp(Position.x, 0, _screenSize.x),
 			y: Mathf.Clamp(Position.y, 0, _screenSize.y)
 			);
-		//Subtract distance traveled since last frame
-		_travelDistance -= (int)(Speed * delta);
 		
-		//Once granny has traveled as far as she should,
+		//Subtract distance traveled since last frame from 
+		//how far to travel before NPC turns
+		_travelDistance -= (Speed * delta);
+		
+		//If NPC has traveled as far as it should,
 		//make a 90 degree turn and choose a random 
 		//distance to travel in the new direction 
 		if (_travelDistance <= 0)
 		{
-			ChangeDirection();
+			ChangeDirection90Degrees();
 			_travelDistance = RandRange(_minTravelDistance, _maxTravelDistance);
 		}
 		
 		if (isGoingOffScreen()){
-			//turn 180 degrees to go back where you came from
+			//turn NPC 180 degrees to go back where it came from
 			_velocity = new Vector2(-_velocity.x, -_velocity.y);
 			_travelDistance = RandRange(_minTravelDistance, _maxTravelDistance);
 		}
 	}
 	
+	private void OnNPCBodyEntered(Node body)
+	{
+		//We only care about collisions with the hero
+		if (body.Name == "Hero")
+		{
+			var grannyNo = GetNode<AudioStreamPlayer2D>("GrannyNo");
+			if(!grannyNo.IsPlaying())
+			{
+				grannyNo.Play();
+			}
+			
+			Hide();
+			EmitSignal("NPCHit");
+			GetNode<CollisionShape2D>("CollisionShape2D").SetDeferred("disabled", true);
+		}
+	}
+	
+	
 	
 }
+
+
