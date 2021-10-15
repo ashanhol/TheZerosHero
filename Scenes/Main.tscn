@@ -55,3 +55,10 @@ position = Vector2( 500, 500 )
 
 [node name="Camera2D" type="Camera2D" parent="Hero"]
 current = true
+
+[node name="MessageTimer" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true
+
+[connection signal="StartPressed" from="HUD" to="." method="StartPressed"]
+[connection signal="timeout" from="MessageTimer" to="." method="OnMessageTimerTimeout"]
