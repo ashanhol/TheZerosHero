@@ -177,6 +177,7 @@ public class Main : Node
 		levelNumVillains_--;
 		CalcPR();
 		UpdateScore();
+		GetNode<Hero>("Hero").WhoWeMovingTowards = null;
 
 		if (levelNumVillains_ <= 0)
 		{
@@ -191,6 +192,7 @@ public class Main : Node
 
 		CalcPR();
 		UpdateScore();
+		GetNode<Hero>("Hero").WhoWeMovingTowards = null;
 	}
 	
 	private void SetCameraLimits() {

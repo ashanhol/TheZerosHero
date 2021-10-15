@@ -27,6 +27,7 @@ public class Hero : KinematicBody2D
 			GD.Print("I hear something");
 			IsPlayerYelling = false;
 			Rotation = (player.Position - Position).Angle();
+			WhoWeMovingTowards = null;
 		}
 		if(WhoWeMovingTowards == null) 
 		{
@@ -49,6 +50,7 @@ public class Hero : KinematicBody2D
 			// If we're already locked to something, move towards it.
 			var direction = Speed * (WhoWeMovingTowards.Position - Position).Normalized();
 			Position += direction * delta;
+			Rotation = (WhoWeMovingTowards.Position - Position).Angle();
 		}
 	}
 	

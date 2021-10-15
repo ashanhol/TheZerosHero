@@ -1,7 +1,8 @@
 using Godot;
+using Godot.Collections;
 using System;
 
-public class Villain : RigidBody2D
+public class Villain : Area2D
 {
 	[Signal]
 	public delegate void VillainHit(); // Will be sent to trigger penalty when players hit in disguise.
@@ -17,6 +18,7 @@ public class Villain : RigidBody2D
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
+		Position = new Vector2();
 		Show();
 		GetNode<CollisionShape2D>("CollisionShape2D").Disabled = false;
 		var animatedSprite = GetNode<AnimatedSprite>("AnimatedSprite");
@@ -63,7 +65,6 @@ public class Villain : RigidBody2D
 		// Only matters if Hero collides
 		if(body.Name == "Hero") 
 		{
-			GD.Print("Hero collided w villian"); // debug print statement to make sure this works
 			EmitSignal("VillainHit");
 			GetNode<CollisionShape2D>("CollisionShape2D").SetDeferred("disabled", true);
 			Hide();
