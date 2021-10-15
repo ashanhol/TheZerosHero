@@ -5,7 +5,7 @@ public class Player : Area2D
 {
 	// Signals
 	[Signal]
-	public delegate void Hit(); // Will be sent to trigger penalty when players hit in disguise.
+	public delegate void PlayerHit(); // Will be sent to trigger penalty when players hit in disguise.
 	[Signal]
 	public delegate void Yell(); // Fired when we're in yell mode.
 
@@ -32,7 +32,7 @@ public class Player : Area2D
 		if(!IsStunned) 
 		{
 			var velocity = new Vector2();
-			var animatedSprite = GetNode<AnimatedSprite>("AnimatedSprite");
+			var animatedSprite = GetNode<AnimatedSprite>("Body");
 			animatedSprite.Play();
 
 			// Determine input.		
@@ -107,7 +107,7 @@ public class Player : Area2D
 	private void OnPlayerBodyEntered(Node body)
 	{
 		// Only worry about hero colliding while in disguise mode.
-		var animatedSprite = GetNode<AnimatedSprite>("AnimatedSprite");
+		var animatedSprite = GetNode<AnimatedSprite>("Body");
 		if (animatedSprite.Animation != "disguise") {
 			return;
 		}
@@ -115,7 +115,7 @@ public class Player : Area2D
 		if(body.Name == "Hero") 
 		{
 			GD.Print("Hero collide while disguised"); // debug print statement to make sure this works
-			EmitSignal("Hit");
+			EmitSignal("PlayerHit");
 			GetNode<CollisionShape2D>("CollisionShape2D").SetDeferred("disabled", true);
 			GetNode<Timer>("StunTimer").Start(); // start stun timer
 			IsStunned = true;
