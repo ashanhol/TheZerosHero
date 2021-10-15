@@ -5,10 +5,12 @@ public class Hero : KinematicBody2D
 {
 		// Variables
 		public bool IsPlayerDisguised = false;
-		public bool IsPlayerDefending = false;
 		public int Speed = 200;
 		[Export]
 		public int SpriteMargin = 25; // Margin to help with clamping so hero stays on screen.
+		[Export]
+		public Node2D Player; // We can set this in editor or the game controller can set.
+		public Node2D WhoWeMovingTowards = null; // Who are we moving towards atm.
 	
 		private Vector2 screenSize_;
 
@@ -21,36 +23,47 @@ public class Hero : KinematicBody2D
 		public override void _PhysicsProcess(float delta)
 		{
 			var spaceState = GetWorld2d().DirectSpaceState;
-			var rayCast = GetNode<RayCast2D>("RayCast2D");
-			if (rayCast.IsColliding())
-			// If the raycast collides with something, move towards it
+			if(WhoWeMovingTowards == null) 
 			{
-				var direction = (GlobalPosition - rayCast.GetCollisionPoint()).Normalized();
-				direction = new Vector2(
-					x: Mathf.Clamp(direction.x, 0 + SpriteMargin, screenSize_.x - SpriteMargin),
-					y: Mathf.Clamp(direction.y, 0 + SpriteMargin, screenSize_.y - SpriteMargin)
-				);
-				var collision = MoveAndCollide(direction * delta);
-				if (collision != null)
+				var rayCast = GetNode<RayCast2D>("RayCast2D");
+				rayCast.CollideWithAreas = true;
+				var node_ = (Node2D)rayCast.GetCollider();				
+				if (rayCast.IsColliding())
+				// If the raycast collides with something, move towards it
 				{
-					GD.Print("Hero hit " + collision.Collider);
+					if(node_.Name == "Player" && !IsPlayerDisguised) {
+						Rotation += 1 * delta;
+						return;
+					}
+					WhoWeMovingTowards = node_;
+				}
+				else
+				{
+					// Rotate the hero until the raycast collides with something				
+					Rotation += 1 * delta;
 				}
 			}
-			else
-			// Rotate the hero until the raycast collides with something
+			else 
 			{
-				Rotation += 1 * delta;
+				var direction = (GlobalPosition - WhoWeMovingTowards.Position);
+				direction = new Vector2(
+						x: Mathf.Clamp(direction.x, 0 + SpriteMargin, screenSize_.x - SpriteMargin),
+						y: Mathf.Clamp(direction.y, 0 + SpriteMargin, screenSize_.y - SpriteMargin)
+					);
+					//var collision = MoveAndCollide(direction * delta);
+					//var collision = MoveAndCollide(WhoWeMovingTowards.Position *-1 * delta);
+	//				if (collision != null)
+	//				{
+	//					GD.Print("Hero hit " + collision.Collider);
+	//				}
+					Position += direction * delta;
 			}
+
 		} 
 		
 		public void FlipIsPlayerDisguised()
 		{
 			IsPlayerDisguised = !IsPlayerDisguised;
-		}
-		
-		public void FlipIsPlayerDefending()
-		{
-			IsPlayerDefending = !IsPlayerDefending;
 		}
 		
 		public void EditRayCastExceptions(Node obj)
@@ -61,15 +74,6 @@ public class Hero : KinematicBody2D
 				rayCast.RemoveException(obj);
 			} else {
 				rayCast.AddException(obj);
-			}
-			
-			if (IsPlayerDefending)
-			{
-				rayCast.Enabled = false;
-			}
-			else
-			{
-				rayCast.Enabled = true;
 			}
 		}
 		

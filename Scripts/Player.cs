@@ -60,7 +60,7 @@ public class Player : Area2D
 				// Change sprite to yell mode.
 				animatedSprite.Animation = "yell";
 				var yoohoo = GetNode<AudioStreamPlayer2D>("Yoohoo");
-				if(!yoohoo.IsPlaying()){
+				if(!yoohoo.Playing){
 					yoohoo.Play();
 					EmitSignal("Yell");			
 				}
