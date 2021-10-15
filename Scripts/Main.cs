@@ -18,6 +18,11 @@ public class Main : Node
 	const string prologue7 = "My first job is for a new hero named Captain Hammer.";
 	const string prologue8 = "The trouble is, Captain Hammer is an idiot…";
 
+	const string boss0 = "Your boss says: Make sure that hero stops the villains and doesn't hurt the grannies!";
+	const string bossPr0 = "Your boss yells: You dolt! It's like the hero hasn't done anything. Are you sleeping on the job?";
+	const string bossPrNeg = "Your boss screams: You idiot! You're doing more harm than good! I should fire you!";
+	const string bossPrPos = "Your boss says: Not bad. Imagine what you could do if you were really trying...";
+
 	private int[] villainLevels = {1, 1, 3};
 	private int[] innocentLevels = {0, 1, 6};
 
@@ -101,9 +106,38 @@ public class Main : Node
 		UpdateScore();		
 	}
 
-	private void SetLevel(int level)
-	{
+	async private void SetLevel(int level)
+	{		
+		var messageTimer = GetNode<Timer>("MessageTimer");
+		var hud = GetNode<HUD>("HUD");
+
 		currentLevel_ = level;
+
+		string message = "";
+
+		if (level == 0)
+		{
+			message = boss0;
+		}
+		else if (pr_ == 0)
+		{
+			message = bossPr0;
+		}
+		else if (pr_ > 0)
+		{
+			message = bossPrPos;
+		}
+		else //if (pr_ < 0)
+		{
+			message = bossPrNeg;
+		}
+
+
+		hud.SetMessage(message);
+		messageTimer.Start();
+		await ToSignal(messageTimer, "timeout");
+		hud.SetMessage("");
+
 		levelNumVillains_ = villainLevels[level];
 		levelNumInnocents_ = innocentLevels[level];
 		
@@ -148,7 +182,6 @@ public class Main : Node
 		{
 			SetLevel(currentLevel_ + 1);
 		}
-
 	}
 
 	private void HitInnocent()
