@@ -8,9 +8,20 @@ public class Main : Node
 	[Export]
 	public PackedScene Villains;
 	
+	const string prologue0 = "When I was a kid, what I wanted more than anything in the world was to be a superhero.";
+	const string prologue1 = "That dream got squashed when my mom pointed out that I don’t have any superpowers.";
+	const string prologue2 = "When I was a teenager, what I wanted more than anything in the world was to be a superhero’s sidekick.";
+	const string prologue3 = "That dream got squashed when I learned that only orphans and circus performers can be sidekicks.";
+	const string prologue4 = "In college, I tried to be a scientific genius who would invent things for superheroes.";
+	const string prologue5 = "But I failed my physics class because I spent too much time writing on the internet about how great superheroes are.";
+	const string prologue6 = "That did lead to my actual career, though. I’ve become a publicist for superheroes.";
+	const string prologue7 = "My first job is for a new hero named Captain Hammer.";
+	const string prologue8 = "The trouble is, Captain Hammer is an idiot…";
+
 	private int[] villainLevels = {1, 1, 3};
 	private int[] innocentLevels = {0, 1, 6};
-	
+
+	private string[] prologueStrings = {prologue0, prologue1, prologue2, prologue3, prologue4, prologue5, prologue6, prologue7, prologue8};	
  
 	// Villains are how many bad guys are left
 	// VillainsHit are how many we dispatched
@@ -45,10 +56,13 @@ public class Main : Node
 	{
 		var messageTimer = GetNode<Timer>("MessageTimer");
 		var hud = GetNode<HUD>("HUD");
+
+		// This hides the score
+		hud.SetScore(-1, 0, 0);
 		
 		hud.ShowButton();		
 
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < prologueStrings.Length; i++)
 		{
 			if (startEarly_)
 			{
@@ -56,7 +70,7 @@ public class Main : Node
 				break;
 			}
 
-			hud.SetMessage(i.ToString());
+			hud.SetMessage(prologueStrings[i]);
 			messageTimer.Start();
 			await ToSignal(messageTimer, "timeout");
 		}
@@ -70,8 +84,13 @@ public class Main : Node
 
 	private void StartPressed()
 	{
-		GD.Print("Main StartPressed");
-		startEarly_ = true;
+		startEarly_ = true;	
+		var messageTimer = GetNode<Timer>("MessageTimer");
+		var waitTime = messageTimer.GetWaitTime();
+		messageTimer.Stop();
+		messageTimer.SetWaitTime(0.01f);
+		messageTimer.Start();
+		messageTimer.SetWaitTime(waitTime);
 	}
 
 	private void StartGame()

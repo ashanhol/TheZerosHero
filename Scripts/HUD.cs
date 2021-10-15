@@ -19,12 +19,18 @@ public class HUD : CanvasLayer
 		
 	}
 
-	// level is one based
+	// level is one based. Negative values hide the score.
 	// villains is number of villains remaining in the level
 	// pr is villains hit - innocents hit 
 	public void SetScore(int level, int villains, int pr)
 	{
-		string score = c_level + level + c_separator + c_villains + villains + c_separator + c_pr + pr;
+		string score = "";
+
+		if (level >= 0)
+		{
+			score = c_level + level + c_separator + c_villains + villains + c_separator + c_pr + pr;	
+		}
+		 
 		GetNode<Label>("Score").Text = score;
 	}
 
@@ -45,7 +51,6 @@ public class HUD : CanvasLayer
 
 	private void OnStartButtonPressed()
 	{
-		GD.Print("HUD OnStartButtonPressed");		
 		EmitSignal("StartPressed");
 	}
 

@@ -1,10 +1,10 @@
 [gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Scripts/Villain.cs" type="Script" id=1]
-[ext_resource path="res://Assets/art/robber2.png" type="Texture" id=2]
-[ext_resource path="res://Assets/art/robber1.png" type="Texture" id=3]
-[ext_resource path="res://Assets/art/robber0.png" type="Texture" id=4]
-[ext_resource path="res://Assets/art/robber3.png" type="Texture" id=5]
+[ext_resource path="res://Assets/fonts/art/robber2.png" type="Texture" id=2]
+[ext_resource path="res://Assets/fonts/art/robber1.png" type="Texture" id=3]
+[ext_resource path="res://Assets/fonts/art/robber0.png" type="Texture" id=4]
+[ext_resource path="res://Assets/fonts/art/robber3.png" type="Texture" id=5]
 [ext_resource path="res://Assets/sounds/vilianlaugh.wav" type="AudioStream" id=6]
 
 [sub_resource type="SpriteFrames" id=1]
@@ -18,9 +18,7 @@ animations = [ {
 [sub_resource type="CircleShape2D" id=2]
 radius = 32.4231
 
-[node name="Villain" type="RigidBody2D"]
-mode = 3
-gravity_scale = 0.0
+[node name="Villain" type="Area2D"]
 script = ExtResource( 1 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
