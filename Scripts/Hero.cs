@@ -27,6 +27,7 @@ public class Hero : KinematicBody2D
 			GD.Print("I hear something");
 			IsPlayerYelling = false;
 			Rotation = (player.Position - Position).Angle();
+			WhoWeMovingTowards = null;
 		}
 		if(WhoWeMovingTowards == null) 
 		{
