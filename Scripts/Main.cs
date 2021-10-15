@@ -174,6 +174,8 @@ public class Main : Node
 		while (amount --> 0) {
 			// Create a single object instance.
 			Node2D instance = (Node2D)objClass.Instance();
+			instance.Connect("NPCHit", this, nameof(HitInnocent));
+			instance.Connect("VillainHit", this, nameof(HitVillain));
 
 			// Pick a random location on our path. Set the mob's position.
 			PathFollow2D spawnLocation =
@@ -183,8 +185,10 @@ public class Main : Node
 			
 			// Finally, add our mob instance.
 			AddChild(instance);
+			instance.Show();
 		}
 	}
+
 
 	private void HitVillain()
 	{
