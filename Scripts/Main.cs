@@ -65,6 +65,8 @@ public class Main : Node
 		var messageTimer = GetNode<Timer>("MessageTimer");
 		var hud = GetNode<HUD>("HUD");
 
+		GetNode<Hero>("Hero").Hide();
+
 		// This hides the score
 		hud.SetScore(-1, 0, 0);
 		
@@ -113,6 +115,7 @@ public class Main : Node
 	{		
 		var messageTimer = GetNode<Timer>("MessageTimer");
 		var hud = GetNode<HUD>("HUD");
+		var hero = GetNode<Hero>("Hero");
 
 		currentLevel_ = level;
 
@@ -135,11 +138,14 @@ public class Main : Node
 			message = bossPrNeg;
 		}
 
+		hero.Hide();
 
 		hud.SetMessage(message);
 		messageTimer.Start();
 		await ToSignal(messageTimer, "timeout");
 		hud.SetMessage("");
+
+		hero.Show();
 
 		int extraVillains = 0;
 		int extraInnocents = 0;
@@ -148,7 +154,7 @@ public class Main : Node
 		{
 			level = villainLevels.Length - 1;
 			int extraLevels = currentLevel_ - level;
-			
+
 			extraVillains = extraLevels * extraVillainsPerLevelAfterMax;
 			extraInnocents = extraLevels * extraInnocentsPerLevelAfterMax;
 		}
