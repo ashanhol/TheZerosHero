@@ -13,6 +13,7 @@ public class Villain : Area2D
 	public int Speed = 200; // No export since we're using it in multiple places in the code.
 	
 	private bool isRight_ = true; // keep track of bounce direction
+	private bool isDown_ = true; // keep track of bounce direction
 	private Vector2 screenSize_;
 
 	// Called when the node enters the scene tree for the first time.
@@ -30,7 +31,7 @@ public class Villain : Area2D
 	public override void _Process(float delta) 
 	{
 		var velocity = new Vector2();
-		velocity.y = 0.2F;
+		velocity.y = isDown_ ? 0.2F : -0.2F;
 		if(isRight_)
 		{
 			velocity.x += 1;
@@ -51,11 +52,16 @@ public class Villain : Area2D
 			isRight_ = false;
 		}
 		
-		// Hero missed his chance to get him.
+		// Bounce the villain within the screen bounds
 		if (Position.y > screenSize_.y)
 		{
-			EmitSignal("VillainOffscren");
-			QueueFree();
+			isDown_ = false;
+			// Hero missed his chance to get him.
+//			EmitSignal("VillainOffscren");
+//			Hide();
+		}
+		else if (Position.y < 0) {
+			isDown_ = true;
 		}
 	}
 
@@ -67,7 +73,7 @@ public class Villain : Area2D
 		{
 			EmitSignal("VillainHit");
 			GetNode<CollisionShape2D>("CollisionShape2D").SetDeferred("disabled", true);
-			QueueFree();
+			Hide();
 		}
 	}
 
