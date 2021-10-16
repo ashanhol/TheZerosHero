@@ -254,11 +254,31 @@ public class Main : Node
 	{
 		
 	}
-//  // Called every frame. 'delta' is the elapsed time since the previous frame.
-//  public override void _Process(float delta)
-//  {
-//      
-//  }
+
+	// Called every frame. 'delta' is the elapsed time since the previous frame.
+	public override void _Process(float delta)
+	{
+		Node2D playerNode = GetNode<Node2D>("Player");
+		Node2D marker = GetNode<Node2D>("HUD/TransparentUI");
+		Vector2 markerSize = new Vector2(60, 75); // hardcoded
+		
+		Vector2 playerPosRelativeToViewport = playerNode.GetGlobalTransformWithCanvas().origin;
+		Vector2 viewportSize = GetViewport().Size;
+		
+		if (new Rect2(new Vector2(0, 0), viewportSize).HasPoint(playerPosRelativeToViewport)) {
+			// If our player is within the viewport, there's no need to show the UI.
+			marker.Hide();
+		}
+		else {
+			// If our player is outside the viewport, position and show the helper UI.
+			Vector2 newPosition = new Vector2(
+				x: Mathf.Clamp(playerPosRelativeToViewport.x, markerSize.x/2, viewportSize.x - markerSize.x/2),
+				y: Mathf.Clamp(playerPosRelativeToViewport.y, markerSize.y/2, viewportSize.y - markerSize.y/2)
+			);
+			marker.Position = newPosition;
+			marker.Show();
+		}
+	}
 }
 
 
