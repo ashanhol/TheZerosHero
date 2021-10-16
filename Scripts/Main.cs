@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 public class Main : Node
 {
@@ -48,6 +49,8 @@ public class Main : Node
 	private bool startEarly_ = false;
 	
 	private static Random _random = new Random();
+	
+	private List<Node> characters = new List<Node>();
 	
 	// FOR TESTING
 	[Export]
@@ -191,6 +194,7 @@ public class Main : Node
 			
 			// Finally, add our mob instance.
 			AddChild(instance);
+			characters.Add(instance);
 			instance.Show();
 		}
 	}
@@ -206,6 +210,13 @@ public class Main : Node
 
 		if (levelNumVillains_ <= 0)
 		{
+			foreach (Node character in characters)
+			{
+				if (character != null){
+					character.QueueFree();
+				}
+			}
+			characters = new List<Node>();
 			SetLevel(currentLevel_ + 1);
 		}
 	}
